@@ -18,7 +18,6 @@
     .widget p {
       font-style: italic;
     }
-
   </style>
 </head>
 
@@ -46,6 +45,52 @@
 
     // 👉 CHALLENGE 1 - Integers
     class Integers {
+      constructor(...args) {
+        this.ints = args
+      }
+
+      getAll() {
+        return [...this.ints]
+      }
+
+      getEvens() {
+        return this.ints.filter((num) => num % 2 === 0);
+      }
+
+      getNegatives() {
+        return this.ints.filter((num) => num < 0);
+      }
+
+      getAllSquared() {
+        return this.ints.map((num) => num * num);
+      }
+
+      pop() {
+        const lastInt = this.ints.pop();
+        return lastInt;
+      }
+
+      push(num) {
+        this.ints.push(num);
+        return this.getAll()
+      }
+
+      getEveryNth(n) {
+        const result = [];
+        for (let i = 0; i < this.ints.length; i += n) {
+          if (i < this.ints.length) {
+            result.push(this.ints[i]);
+          }
+        }
+        return result;
+      }
+
+      getAllReversed() {
+        const reverseInts = [...this.ints].reverse();
+        return reverseInts;
+      }
+
+
       // 🧠 Constructor takes **any** number of arguments, which are integers
       // 🧠 Instances have an `ints` property which is an array holding the integers above in the same order
       // 🧠 Implement a `getAll` method which returns the data held in the `ints` property
@@ -63,6 +108,47 @@
 
     // 👉 CHALLENGE 2 NerfGun
     class NerfGun {
+      constructor(totalProjectiles) {
+        if (typeof totalProjectiles !== 'number' || totalProjectiles <= 0) {
+          this.maxCapacity = 0;
+          this.currentCapacity = 0;
+          this.safetyOn = true;
+        } else {
+          this.maxCapacity = totalProjectiles;
+          this.currentCapacity = totalProjectiles;
+          this.safetyOn = true;
+        }
+      }
+
+      shoot() {
+        if (this.currentCapacity > 0 && !this.safetyOn) {
+          this.currentCapacity--;
+          return "Bang!";
+        } else {
+          return "Click!";
+        }
+      }
+
+      reload(numberOfProjectiles) {
+        if (typeof numberOfProjectiles !== 'number' || numberOfProjectiles <= 0) {
+          return "Error reloading!";
+        } else {
+          this.currentCapacity = Math.min(this.currentCapacity + numberOfProjectiles, this.maxCapacity);
+          return `${this.currentCapacity} projectiles left!`;
+        }
+      }
+
+      toggleSafety() {
+        this.safetyOn = !this.safetyOn;
+        if (this.safetyOn) {
+          return "Safety enabled!";
+        } else {
+          return "Safety disabled!";
+        }
+      }
+
+
+
       // 🧠 Constructor takes one argument: the total number of projectiles supported by the instance
       // 🧠 New instances initialize fully loaded and with the safety on
       // 🧠 Instances have a `shoot` method that takes no arguments:
@@ -81,6 +167,33 @@
 
     // 👉 CHALLENGE 3 EBook
     class EBook {
+  constructor(bookText, charactersPerPage) {
+    this.bookText = bookText;
+    this.charactersPerPage = charactersPerPage;
+    this.currentPage = 0;
+  }
+
+  next() {
+    if (this.currentPage >= this.bookText.length) {
+      return null; // Reached the end of the book
+    } else {
+      const nextPage = this.bookText.slice(this.currentPage, this.currentPage + this.charactersPerPage);
+      this.currentPage += this.charactersPerPage;
+      return nextPage;
+    }
+  }
+
+  // Optional method to go back to the previous page (not required)
+  back() {
+    if (this.currentPage <= 0) {
+      return null; // Already at the beginning of the book
+    } else {
+      this.currentPage -= this.charactersPerPage;
+      const previousPage = this.bookText.slice(this.currentPage, this.currentPage + this.charactersPerPage);
+      return previousPage;
+    }
+  }
+
       // 🧠 Constructor takes two arguments:
       //      * First arg is a string with the whole text of the book
       //      * Second arg is the number of characters contained in a single page of the book
@@ -100,6 +213,70 @@
 
     // 👉 CHALLENGE 4 AntFarm
     class AntFarm {
+  constructor(...antNames) {
+    this.ants = antNames.map(name => ({ name, health: 100 }));
+  }
+
+  work() {
+    if (this.ants.length === 0) {
+      return "No ants here. Did you work them to death?";
+    }
+
+    const antsBeforeWork = this.ants.length;
+
+    for (let i = 0; i < this.ants.length; i++) {
+      this.ants[i].health -= 20;
+
+      if (this.ants[i].health <= 0) {
+        this.removeDeadAnt(i);
+        i--;
+      }
+    }
+
+    return `${antsBeforeWork} ants starting work!`;
+  }
+
+  feed(antName) {
+    const antIndices = this.findAntIndicesByName(antName);
+
+    if (antIndices.length > 0) {
+      antIndices.forEach(index => {
+        this.ants[index].health += 15;
+      });
+      return "Yum!";
+    } else {
+      return `${antName} not found!`;
+    }
+  }
+
+  findAntIndicesByName(name) {
+    const indices = [];
+    for (let i = 0; i < this.ants.length; i++) {
+      if (this.ants[i].name === name) {
+        indices.push(i);
+      }
+    }
+    return indices;
+  }
+
+  removeDeadAnt(index) {
+    this.ants.splice(index, 1);
+  }
+
+  findAntIndexByName(name) {
+    for (let i = 0; i < this.ants.length; i++) {
+      if (this.ants[i].name === name) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+
+
+
+
+
       // 🧠 Constructor takes **any** number of arguments, which are strings: the names of your ants
       // 🧠 Instances of AntFarm have an `ants` property holding an array of ants:
       //      * Each ant is an object with a `name` prop and a `health` prop that starts at 100
